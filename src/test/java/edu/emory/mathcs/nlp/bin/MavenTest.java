@@ -21,9 +21,9 @@ import java.util.List;
 
 import org.junit.Test;
 
-import edu.emory.mathcs.nlp.common.DSUtils;
-import edu.emory.mathcs.nlp.common.Joiner;
-import edu.emory.mathcs.nlp.common.constant.StringConst;
+import edu.emory.mathcs.nlp.util.DSUtils;
+import edu.emory.mathcs.nlp.util.Joiner;
+import edu.emory.mathcs.nlp.util.constant.StringConst;
 
 /**
  * @author Jinho D. Choi ({@code jinho.choi@emory.edu})
@@ -33,7 +33,7 @@ public class MavenTest
 	@Test
 	public void test()
 	{
-		List<String> list = DSUtils.toArrayList("A","B","C");
+		List<String> list = DSUtils.toList("A","B","C");
 		assertEquals("A B C", Joiner.join(list, StringConst.SPACE));
 	}
 }
