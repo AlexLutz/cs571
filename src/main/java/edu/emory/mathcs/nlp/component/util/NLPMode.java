@@ -13,18 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package edu.emory.mathcs.nlp.component.pos;
-
-import edu.emory.mathcs.nlp.component.state.L2RState;
+package edu.emory.mathcs.nlp.component.util;
 
 /**
- * Part-of-speech tagging state.
  * @author Jinho D. Choi ({@code jinho.choi@emory.edu})
  */
-public class POSState<N extends POSNode> extends L2RState<N>
+public enum NLPMode
 {
-	public POSState(N[] nodes)
-	{
-		super(nodes, N::getPOSTag, N::setPOSTag);
-	}
+	pos,
+	dep,
+	ner,
+	srl;
 }

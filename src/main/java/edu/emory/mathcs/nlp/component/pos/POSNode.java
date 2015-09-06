@@ -15,52 +15,81 @@
  */
 package edu.emory.mathcs.nlp.component.pos;
 
+import edu.emory.mathcs.nlp.component.util.FeatMap;
+import edu.emory.mathcs.nlp.component.util.NLPNode;
+
 
 /**
  * @author Jinho D. Choi ({@code jinho.choi@emory.edu})
  */
-public class POSNode implements IPOSNode
+public class POSNode extends NLPNode
 {
 	private static final long serialVersionUID = -8563108117037742010L;
-	protected String word_form;
-	protected String pos_tag;
+	protected String  pos_tag;
+	protected FeatMap feat_map;
 	
 	public POSNode(String form)
 	{
-		setWordForm(form);
+		super(form);
+		set(null, new FeatMap());
 	}
 	
 	public POSNode(String form, String tag)
 	{
-		setWordForm(form);
-		setPOSTag(tag);
+		super(form);
+		set(tag, new FeatMap());
 	}
 	
-	@Override
-	public String getWordForm()
+	public POSNode(String form, String tag, FeatMap map)
 	{
-		return word_form;
+		super(form);
+		set(tag, map);
 	}
-
-	@Override
+	
+	private void set(String tag, FeatMap map)
+	{
+		setPOSTag(tag);
+		setFeatMap(map);
+	}
+	
+//	============================== POS Tag ==============================
+	
 	public String getPOSTag()
 	{
 		return pos_tag;
 	}
 
-	@Override
-	public String setWordForm(String form)
-	{
-		String t  = word_form;
-		word_form = form;
-		return t;
-	}
-	
-	@Override
 	public String setPOSTag(String tag)
 	{
 		String t = pos_tag;
-		pos_tag  = tag;
+		pos_tag = tag;
 		return t;
+	}
+	
+//	============================== Feature Map ==============================
+	
+	public FeatMap getFeatMap()
+	{
+		return feat_map;
+	}
+	
+	public void setFeatMap(FeatMap map)
+	{
+		feat_map = map;
+	}
+	
+	public String getFeat(String key)
+	{
+		return feat_map.get(key);
+	}
+	
+	public void putFeat(String key, String value)
+	{
+		feat_map.put(key, value);
+	}
+	
+	public String removeFeat(String key)
+	{
+		return feat_map.remove(key);
 	}
 }
