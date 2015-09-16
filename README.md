@@ -7,3 +7,15 @@ This is a graduate course in computer science, studying topics in natural Langua
 * [Schedule](../../wiki/Schedule).
 * [Reading](../../wiki/Reading).
 * [Quizzes](../../wiki/Quizzes).
+
+## Component
+
+* [Part-of-speech tagging](md/component/part_of_speech_tagging.md).
+
+## Specification
+
+* [Configuration](md/specification/configuration.md).
+
+## More
+
+* Run command lines using Maven.
