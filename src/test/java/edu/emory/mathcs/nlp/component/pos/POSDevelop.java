@@ -29,7 +29,7 @@ import edu.emory.mathcs.nlp.component.util.NLPFlag;
 import edu.emory.mathcs.nlp.component.util.TSVReader;
 import edu.emory.mathcs.nlp.learn.model.StringModel;
 import edu.emory.mathcs.nlp.learn.sgd.StochasticGradientDescent;
-import edu.emory.mathcs.nlp.learn.sgd.adagrad.MultinomialAdaGradHinge;
+import edu.emory.mathcs.nlp.learn.sgd.perceptron.MultinomialPerceptron;
 import edu.emory.mathcs.nlp.learn.weight.MultinomialWeightVector;
 
 
@@ -41,7 +41,7 @@ public class POSDevelop
 	@Test
 	public void develop() throws IOException
 	{
-		final String  root = "/Users/jdchoi/Documents/Data/experiments/wsj/pos/";
+		final String  root = "/Users/alexlutz/Documents/Data/experiments/wsj/pos/";
 		final boolean average = false;
 		final double  ambiguity_class_threshold = 0.4;
 		final double  learning_rate = 0.02;
@@ -69,7 +69,8 @@ public class POSDevelop
 		model.vectorize(label_cutoff, feature_cutoff);
 		
 		// train the statistical model using the development data
-		StochasticGradientDescent sgd = new MultinomialAdaGradHinge(model.getWeightVector(), average, learning_rate, ridge);
+//		StochasticGradientDescent sgd = new MultinomialAdaGradHinge(model.getWeightVector(), average, learning_rate, ridge);
+		StochasticGradientDescent sgd = new MultinomialPerceptron(model.getWeightVector(), average, learning_rate);
 		Eval eval = new AccuracyEval();
 		tagger.setFlag(NLPFlag.EVALUATE);
 		tagger.setEval(eval);

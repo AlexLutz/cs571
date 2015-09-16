@@ -3,4 +3,5 @@
 .settings/
 .project
 .classpath
-
+.idea/
+cs571.iml
