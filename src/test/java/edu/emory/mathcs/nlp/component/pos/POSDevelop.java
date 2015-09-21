@@ -28,13 +28,8 @@ import edu.emory.mathcs.nlp.component.util.eval.AccuracyEval;
 import edu.emory.mathcs.nlp.component.util.eval.Eval;
 import edu.emory.mathcs.nlp.component.util.reader.TSVReader;
 import edu.emory.mathcs.nlp.learn.model.StringModel;
-<<<<<<< HEAD
-import edu.emory.mathcs.nlp.learn.sgd.StochasticGradientDescent;
-import edu.emory.mathcs.nlp.learn.sgd.perceptron.MultinomialPerceptron;
-=======
 import edu.emory.mathcs.nlp.learn.optimization.OnlineOptimizer;
 import edu.emory.mathcs.nlp.learn.optimization.minibatch.AdaDeltaMiniBatch;
->>>>>>> upstream/master
 import edu.emory.mathcs.nlp.learn.weight.MultinomialWeightVector;
 
 
@@ -55,12 +50,12 @@ public class POSDevelop
 		
 		TSVReader<POSNode> reader = new TSVReader<>(new POSIndex(0,1));
 		List<String> trainFiles   = FileUtils.getFileList(root+"trn/", "pos");
-		List<String> developFiles = FileUtils.getFileList(root+"tst/", "pos");
+		List<String> developFiles = FileUtils.getFileList(root+"dev/", "pos");
 		
 		// collect ambiguity classes from the training data
 		System.out.println("Collecting ambiguity classes.");
 		AmbiguityClassMap ambi = new AmbiguityClassMap();
-		iterate(reader, trainFiles, nodes -> ambi.add(nodes));
+//		iterate(reader, trainFiles, nodes -> ambi.add(nodes));
 		ambi.expand(ambiguity_class_threshold);
 		
 		// collect training instances from the training data

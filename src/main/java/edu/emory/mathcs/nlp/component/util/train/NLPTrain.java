@@ -70,7 +70,7 @@ public abstract class NLPTrain<N,L,S extends NLPState<N,L>>
 	protected abstract FeatureTemplate<N,S> createFeatureTemplate();
 	protected abstract NLPComponent<N,L,S> createComponent();
 	protected abstract Eval createEvaluator();
-	
+
 	public void train()
 	{
 		List<String>        trainFiles    = FileUtils.getFileList(train_path  , train_ext);

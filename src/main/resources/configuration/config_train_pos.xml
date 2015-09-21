@@ -9,7 +9,7 @@
     <optimizer>
         <algorithm>adadelta-mini-batch</algorithm>
         <label_cutoff>4</label_cutoff>
-        <feature_cutoff>3</feature_cutoff>
+        <feature_cutoff>4</feature_cutoff>
         <reset_weights>false</reset_weights>
         <average>false</average>
         <batch_ratio>0.1</batch_ratio>
