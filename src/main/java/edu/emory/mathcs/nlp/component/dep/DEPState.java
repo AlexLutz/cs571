@@ -1,3 +1,5 @@
+package edu.emory.mathcs.nlp.component.dep;
+
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
