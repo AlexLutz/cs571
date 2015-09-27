@@ -66,7 +66,7 @@ public class StringModel implements Serializable
 	public void addInstance(StringInstance instance)
 	{
 		label_map.add(instance.getLabel());
-		instance.getVector().forEach(e -> feature_map.add(e.getType(), e.getValue()));
+		instance.getVector().forEach(e -> feature_map.add(e.getType(), e.getValue()));	//one one vector here
 		instance_deque.add(instance);
 	}
 	

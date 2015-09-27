@@ -91,7 +91,7 @@ public class POSNode extends NLPNode
 	
 	public boolean isLemma(String lemma)
 	{
-		return lemma.equals(lemma);
+		return 	this.lemma.equals(lemma);
 	}
 	
 //	============================== HELPERS ==============================
