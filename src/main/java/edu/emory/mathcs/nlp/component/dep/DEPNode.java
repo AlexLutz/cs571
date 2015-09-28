@@ -33,8 +33,8 @@ import edu.emory.mathcs.nlp.common.collection.list.SortedArrayList;
 import edu.emory.mathcs.nlp.common.constant.StringConst;
 import edu.emory.mathcs.nlp.common.util.DSUtils;
 import edu.emory.mathcs.nlp.component.pos.POSNode;
+import edu.emory.mathcs.nlp.component.util.feature.Direction;
 import edu.emory.mathcs.nlp.component.util.feature.Field;
-import edu.emory.mathcs.nlp.component.util.node.DirectionType;
 import edu.emory.mathcs.nlp.component.util.node.FeatMap;
 
 
@@ -44,18 +44,24 @@ import edu.emory.mathcs.nlp.component.util.node.FeatMap;
 public class DEPNode extends POSNode implements Comparable<DEPNode>
 {
 	private static final long serialVersionUID = 3794720014142939766L;
-	static DEPNode ROOT = new DEPNode(0, "@#r$%", "@#r$%", "@#r$%", new FeatMap(), null, "@#r$%");
+	static final String ROOT_TAG = "@#r$%";
 
 	/** The dependency label of this node. */
 	protected String dependency_label;
 	/** The dependency head of this node. */
-	protected DEPNode head_node;
+	protected DEPNode dependency_head;
 	/** The sorted list of all dependents of this node (default: empty). */
 	protected SortedArrayList<DEPNode> dependent_list;
 	/** The ID of this node among its sibling (starting with 0). */
 	protected int sibling_id;
 	
 //	====================================== Constructors ======================================
+	
+	/** Creates an artificial root node. */
+	public DEPNode()
+	{
+		this(0, ROOT_TAG, ROOT_TAG, ROOT_TAG, new FeatMap());
+	}
 	
 	public DEPNode(int id, String form)
 	{
@@ -77,16 +83,7 @@ public class DEPNode extends POSNode implements Comparable<DEPNode>
 		setLabel(label);
 	}
 	
-	/** Clear all dependencies(head, label, and sibling relations) of the node. */
-	void clearDependencies()
-	{
-		head_node  = null;
-		dependency_label = null;
-		sibling_id = 0;
-		dependent_list.clear();
-	}
-	
-//	====================================== GETTERS ======================================
+	//	====================================== GETTERS ======================================
 	
 	public String getLabel()
 	{
@@ -95,7 +92,7 @@ public class DEPNode extends POSNode implements Comparable<DEPNode>
 	
 	public DEPNode getHead()
 	{
-		return head_node;
+		return dependency_head;
 	}
 
 	/** @return the dependency grand-head of the node if exists; otherwise, {@code null}. */
@@ -118,10 +115,10 @@ public class DEPNode extends POSNode implements Comparable<DEPNode>
 	 */
 	public DEPNode getLeftNearestSibling(int order)
 	{
-		if (head_node != null)
+		if (dependency_head != null)
 		{
 			order = sibling_id - order - 1;
-			if (order >= 0) return head_node.getDependent(order);
+			if (order >= 0) return dependency_head.getDependent(order);
 		}
 		
 		return null;
@@ -129,13 +126,13 @@ public class DEPNode extends POSNode implements Comparable<DEPNode>
 	
 	public DEPNode getLeftNearestSibling(String label)
 	{
-		if (head_node != null)
+		if (dependency_head != null)
 		{
 			DEPNode node;
 			
 			for (int i=sibling_id-1; i>=0; i--)
 			{	
-				node = head_node.getDependent(i);
+				node = dependency_head.getDependent(i);
 				if (node.isLabel(label)) return node;
 			}
 		}
@@ -160,10 +157,10 @@ public class DEPNode extends POSNode implements Comparable<DEPNode>
 	 */
 	public DEPNode getRightNearestSibling(int order)
 	{
-		if (head_node != null)
+		if (dependency_head != null)
 		{
 			order = sibling_id + order + 1;
-			if (order < head_node.getDependentSize()) return head_node.getDependent(order);
+			if (order < dependency_head.getDependentSize()) return dependency_head.getDependent(order);
 		}
 		
 		return null;
@@ -171,14 +168,14 @@ public class DEPNode extends POSNode implements Comparable<DEPNode>
 	
 	public DEPNode getRightNearestSibling(String label)
 	{
-		if (head_node != null)
+		if (dependency_head != null)
 		{
-			int i, size = head_node.getDependentSize();
+			int i, size = dependency_head.getDependentSize();
 			DEPNode node;
 			
 			for (i=sibling_id+1; i<size; i++)
 			{	
-				node = head_node.getDependent(i);
+				node = dependency_head.getDependent(i);
 				if (node.isLabel(label)) return node;
 			}
 		}
@@ -628,13 +625,13 @@ public class DEPNode extends POSNode implements Comparable<DEPNode>
 	 * @param direction DirectionType of l, r, a 
 	 * @return "0" - no dependents, "<" - left dependents, ">" - right dependents, "<>" - left and right dependents. 
 	 */
-	public String getValency(DirectionType direction)
+	public String getValency(Direction direction)
 	{
 		switch (direction)
 		{
-		case  l: return getLeftValency();
-		case  r: return getRightValency();
-		case  a: return getLeftValency()+"-"+getRightValency();
+		case  left: return getLeftValency();
+		case  right: return getRightValency();
+		case  all: return getLeftValency()+"-"+getRightValency();
 		default: return null;
 		}
 	}
@@ -683,13 +680,13 @@ public class DEPNode extends POSNode implements Comparable<DEPNode>
 	 * @param field Field of tag feature
 	 * @return "< {@code TagFeature}" for left sub-categorization, "> {@code TagFeature}" for right-categorization, and {@code null} if not exist
 	 */
-	public String getSubcategorization(DirectionType direction, Field field)
+	public String getSubcategorization(Direction direction, Field field)
 	{
 		switch (direction)
 		{
-		case l: return getLeftSubcategorization (field);
-		case r: return getRightSubcategorization(field);
-		case a:
+		case left: return getLeftSubcategorization (field);
+		case right: return getRightSubcategorization(field);
+		case all:
 			String left = getLeftSubcategorization(field);
 			if (left == null) return getRightSubcategorization(field);
 			String right = getRightSubcategorization(field);
@@ -877,12 +874,12 @@ public void setLabel(String label)
 	public void setHead(DEPNode node)
 	{
 		if (hasHead())
-			head_node.dependent_list.remove(this);
+			dependency_head.dependent_list.remove(this);
 		
 		if (node != null)
 			sibling_id = node.dependent_list.addItem(this);
 		
-		head_node = node;
+		dependency_head = node;
 	}
 	
 	/** 
@@ -915,6 +912,20 @@ public void setLabel(String label)
 		node.setHead(this, label);
 	}
 	
+	/**
+	 * Clear out all dependencies (head, label, and sibling relations) of the node.
+	 * @param the previous head information.
+	 */
+	public DEPArc clearDependencies()
+	{
+		DEPArc arc = new DEPArc(dependency_head, dependency_label);
+		dependency_head  = null;
+		dependency_label = null;
+		sibling_id = 0;
+		dependent_list.clear();
+		return arc;
+	}
+	
 //	====================================== Booleans ======================================
 	
 	/**
@@ -923,7 +934,7 @@ public void setLabel(String label)
 	 */
 	public boolean hasHead()
 	{
-		return head_node != null;
+		return dependency_head != null;
 	}
 	
 	/**
@@ -1009,7 +1020,7 @@ public void setLabel(String label)
 	 */
 	public boolean isDependentOf(DEPNode node)
 	{
-		return head_node == node;
+		return dependency_head == node;
 	}
 	
 	/**
@@ -1048,7 +1059,7 @@ public void setLabel(String label)
 	 */
 	public boolean isSiblingOf(DEPNode node)
 	{
-		return hasHead() && node.isDependentOf(head_node);
+		return hasHead() && node.isDependentOf(dependency_head);
 	}
 
 //	====================================== Helpers ======================================
@@ -1066,7 +1077,7 @@ public void setLabel(String label)
 		
 		if (hasHead())
 		{
-			join.add(Integer.toString(head_node.id));
+			join.add(Integer.toString(dependency_head.id));
 			join.add(dependency_label);
 		}
 		else
