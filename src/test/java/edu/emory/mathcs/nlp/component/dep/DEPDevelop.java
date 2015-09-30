@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import edu.emory.mathcs.nlp.common.util.FileUtils;
 import edu.emory.mathcs.nlp.common.util.IOUtils;
+import edu.emory.mathcs.nlp.component.dep.feature.DEPFeatureTemplate0;
 import edu.emory.mathcs.nlp.component.util.NLPFlag;
 import edu.emory.mathcs.nlp.component.util.reader.TSVReader;
 import edu.emory.mathcs.nlp.learn.model.StringModel;
@@ -32,7 +33,7 @@ public class DEPDevelop
 		StringModel model = new StringModel(new MultinomialWeightVector());
 		DEPParser<DEPNode> parse = new DEPParser<DEPNode>(model);
 		parse.setFlag(NLPFlag.TRAIN);
-		parse.setFeatureTemplate(new DEPFeatureTemplate());
+		parse.setFeatureTemplate(new DEPFeatureTemplate0());
 //		iterate(reader, trainFiles, nodes -> parse.process(nodes));	
 		iterate(reader, testFile, nodes -> parse.process(nodes));
 	}

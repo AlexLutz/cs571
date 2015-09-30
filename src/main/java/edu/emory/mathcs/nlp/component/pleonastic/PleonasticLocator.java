@@ -9,9 +9,10 @@ import edu.emory.mathcs.nlp.component.dep.DEPState;
 import edu.emory.mathcs.nlp.component.util.NLPComponent;
 import edu.emory.mathcs.nlp.learn.model.StringModel;
 import edu.emory.mathcs.nlp.learn.util.StringInstance;
+import edu.emory.mathcs.nlp.learn.util.StringPrediction;
 import edu.emory.mathcs.nlp.learn.vector.StringVector;
 
-public class PleonasticLocator<N extends DEPNode> extends NLPComponent<N,String,PleonasticState<N>>
+public class PleonasticLocator<N extends DEPNode> extends NLPComponent<N,PleonasticState<N>>
 {
 
 	public PleonasticLocator(StringModel model)
@@ -35,7 +36,7 @@ public class PleonasticLocator<N extends DEPNode> extends NLPComponent<N,String,
 	@Override
 	protected PleonasticState<N> createState(N[] nodes)
 	{
-		return new PleonasticState<N>(nodes);	//will have to change if state gets class variables
+		return new PleonasticState<N>(nodes, true);	
 	}
 
 	@Override
@@ -45,9 +46,8 @@ public class PleonasticLocator<N extends DEPNode> extends NLPComponent<N,String,
 	}
 
 	@Override
-	protected String getLabel(PleonasticState<N> state, StringVector vector)
-	{
-		return isTrain() ? state.getGoldLabel() : models[0].predictBest(vector).getLabel();
+	protected StringPrediction getModelPrediction(PleonasticState<N> state, StringVector vector) {
+		return models[0].predictBest(vector);
 	}
 
 }

@@ -1,8 +1,9 @@
 package edu.emory.mathcs.nlp.component.pleonastic;
 
+import java.util.Arrays;
+
 import edu.emory.mathcs.nlp.common.util.StringUtils;
 import edu.emory.mathcs.nlp.component.dep.DEPNode;
-import edu.emory.mathcs.nlp.component.dep.DEPState;
 import edu.emory.mathcs.nlp.component.util.feature.FeatureItem;
 import edu.emory.mathcs.nlp.component.util.feature.FeatureTemplate;
 import edu.emory.mathcs.nlp.component.util.feature.Field;
@@ -16,7 +17,7 @@ public class PleonasticFeatureTemplate<N extends DEPNode> extends FeatureTemplat
 
 	private void init() 
 	{
-		//lemma
+//		lemma
 		add(new FeatureItem<>(-4, Field.lemma));
 		add(new FeatureItem<>(-3, Field.lemma));
 		add(new FeatureItem<>(-2, Field.lemma));
@@ -27,7 +28,7 @@ public class PleonasticFeatureTemplate<N extends DEPNode> extends FeatureTemplat
 		add(new FeatureItem<>(3, Field.lemma));
 		add(new FeatureItem<>(4, Field.lemma));
 		
-		//POS tags
+//		POS tags
 		add(new FeatureItem<>(-4, Field.pos_tag));
 		add(new FeatureItem<>(-3, Field.pos_tag));
 		add(new FeatureItem<>(-2, Field.pos_tag));
@@ -43,7 +44,7 @@ public class PleonasticFeatureTemplate<N extends DEPNode> extends FeatureTemplat
 	@Override
 	protected String getFeature(FeatureItem<?> item)
 	{
-		N node = state.getNode(item.window);
+		N node = state.getNode(state.index, item.window);	//double check this
 		if (node == null) return null;
 		
 		switch (item.field)
@@ -55,17 +56,38 @@ public class PleonasticFeatureTemplate<N extends DEPNode> extends FeatureTemplat
 		case lemma: return node.getLemma();
 		case feats: return node.getFeat((String)item.value);
 		case pos_tag: return node.getPOSTag();
-//		case prefix: return getPrefix(node, (Integer)item.value);
-//		case suffix: return getSuffix(node, (Integer)item.value);
+		case prefix: return getPrefix(node, (Integer)item.value);
+		case suffix: return getSuffix(node, (Integer)item.value);
 		default: throw new IllegalArgumentException("Unsupported feature: "+item.field);
 		}
 	}
 	
-	//dont currently use will have to change if otherwise
 	@Override
 	protected String[] getFeatures(FeatureItem<?> item)
 	{
-		return null;
+		DEPNode node = state.getNode(state.index, item.window);
+		if (node == null) return null;
+		
+		switch (item.field)
+		{
+//		case orthographic: return getOrthographicFeatures(node);
+//		case binary: return getBinaryFeatures(node);
+		default: throw new IllegalArgumentException("Unsupported feature: "+item.field);
+		}
 	}
-
+	
+	/** The prefix cannot be the entire word (e.g., getPrefix("abc", 3) -> null). */
+	protected String getPrefix(DEPNode node, int n)
+	{
+		String s = node.getSimplifiedWordForm();
+		return (n < s.length()) ? StringUtils.toLowerCase(s.substring(0, n)) : null;
+	}
+	
+	/** The suffix cannot be the entire word (e.g., getSuffix("abc", 3) -> null). */
+	protected String getSuffix(DEPNode node, int n)
+	{
+		String s = node.getSimplifiedWordForm();
+		return (n < s.length()) ? StringUtils.toLowerCase(s.substring(s.length()-n)) : null;
+	}
+	
 }
