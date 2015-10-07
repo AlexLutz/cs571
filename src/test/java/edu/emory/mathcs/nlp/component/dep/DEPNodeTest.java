@@ -15,40 +15,21 @@
  */
 package edu.emory.mathcs.nlp.component.dep;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.junit.Test;
-
-import edu.emory.mathcs.nlp.common.util.Joiner;
 import edu.emory.mathcs.nlp.component.util.feature.Direction;
 import edu.emory.mathcs.nlp.component.util.feature.Field;
 import edu.emory.mathcs.nlp.component.util.node.FeatMap;
-import edu.emory.mathcs.nlp.component.util.reader.TSVReader;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.util.*;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Jinho D. Choi ({@code jinho.choi@emory.edu})
  */
 public class DEPNodeTest
 {
-	@Test
-	public void test() throws Exception
-	{
-		TSVReader<DEPNode> reader = new TSVReader<>(new DEPIndex(1, 2, 3, 4, 5, 6));
-		reader.open(new FileInputStream("src/main/resources/dat/wsj_0001.dep"));
-		DEPNode[] nodes = reader.next();
-		
-		// TODO:
-		System.out.println(Joiner.join(nodes, "\n"));
-	}
-	
 	@Test
 	public void testBasicFields()
 	{
@@ -71,7 +52,7 @@ public class DEPNodeTest
 		node.putFeat("fst", "Jinho");
 		assertEquals("Jinho", node.getFeat("fst"));
 	}
-	
+
 	@Test
 	public void testSetters()
 	{
@@ -133,4 +114,5 @@ public class DEPNodeTest
 		assertEquals(true, node5.containsDependent("prep"));
 		assertEquals(null, node5.getAnyDescendantByPOSTag("NN"));
 	}
+
 }

@@ -52,8 +52,6 @@ public class DEPNode extends POSNode implements Comparable<DEPNode>
 	protected DEPNode dependency_head;
 	/** The sorted list of all dependents of this node (default: empty). */
 	protected SortedArrayList<DEPNode> dependent_list;
-	/** The ID of this node among its sibling (starting with 0). */
-	protected int sibling_id;
 	
 //	====================================== Constructors ======================================
 	
@@ -108,16 +106,21 @@ public class DEPNode extends POSNode implements Comparable<DEPNode>
 		return getLeftNearestSibling(0);
 	}
 	
+	private int getSiblingID()
+	{
+		return Collections.binarySearch(dependency_head.getDependentList(), this);
+	}
+	
 	/**
-	 * Get the left sibling node with input displacement (0 - leftmost, 1 - second leftmost, etc.).
-	 * @param order left displacement
-	 * @return the left sibling node with input displacement
+
+	 * @return the left sibling node with input displacement.
+	 * @param order left displacement (0 - left-nearest, 1 - second left-nearest, etc.).
 	 */
 	public DEPNode getLeftNearestSibling(int order)
 	{
 		if (dependency_head != null)
 		{
-			order = sibling_id - order - 1;
+			order = getSiblingID() - order - 1;
 			if (order >= 0) return dependency_head.getDependent(order);
 		}
 		
@@ -130,7 +133,7 @@ public class DEPNode extends POSNode implements Comparable<DEPNode>
 		{
 			DEPNode node;
 			
-			for (int i=sibling_id-1; i>=0; i--)
+			for (int i=getSiblingID()-1; i>=0; i--)
 			{	
 				node = dependency_head.getDependent(i);
 				if (node.isLabel(label)) return node;
@@ -151,7 +154,7 @@ public class DEPNode extends POSNode implements Comparable<DEPNode>
 	}
 	
 	/**
-	 * Get the right sibling node with input displacement (0 - rightmost, 1 - second rightmost, etc.).
+	 * Get the right sibling node with input displacement (0 - right-nearest, 1 - second right-nearest, etc.).
 	 * @param order right displacement
 	 * @return the right sibling node with input displacement
 	 */
@@ -159,7 +162,7 @@ public class DEPNode extends POSNode implements Comparable<DEPNode>
 	{
 		if (dependency_head != null)
 		{
-			order = sibling_id + order + 1;
+			order = getSiblingID() + order + 1;
 			if (order < dependency_head.getDependentSize()) return dependency_head.getDependent(order);
 		}
 		
@@ -173,7 +176,7 @@ public class DEPNode extends POSNode implements Comparable<DEPNode>
 			int i, size = dependency_head.getDependentSize();
 			DEPNode node;
 			
-			for (i=sibling_id+1; i<size; i++)
+			for (i=getSiblingID()+1; i<size; i++)
 			{	
 				node = dependency_head.getDependent(i);
 				if (node.isLabel(label)) return node;
@@ -877,7 +880,7 @@ public void setLabel(String label)
 			dependency_head.dependent_list.remove(this);
 		
 		if (node != null)
-			sibling_id = node.dependent_list.addItem(this);
+			node.dependent_list.addItem(this);
 		
 		dependency_head = node;
 	}
@@ -921,7 +924,6 @@ public void setLabel(String label)
 		DEPArc arc = new DEPArc(dependency_head, dependency_label);
 		dependency_head  = null;
 		dependency_label = null;
-		sibling_id = 0;
 		dependent_list.clear();
 		return arc;
 	}
