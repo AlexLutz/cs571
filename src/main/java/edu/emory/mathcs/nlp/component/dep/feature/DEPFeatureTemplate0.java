@@ -22,6 +22,8 @@ import edu.emory.mathcs.nlp.component.util.feature.Field;
 import edu.emory.mathcs.nlp.component.util.feature.Relation;
 import edu.emory.mathcs.nlp.component.util.feature.Source;
 
+import java.io.IOException;
+
 /**
  * @author Jinho D. Choi ({@code jinho.choi@emory.edu})
  */

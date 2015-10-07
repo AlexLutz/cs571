@@ -1,7 +1,10 @@
 /bin/
 /target/
-
+/classes
 .project
 .classpath
 .idea/
 cs571.iml
+.DS_Store
+classes/
+src/main/java/META-INF/

@@ -40,7 +40,12 @@ public enum Field
 	dependency_label,
 	distance,
 	valency,
-	
+	subcategory_label,
+	subcategory_lemma,
+	subcategory_pos,
+	path,
+	brown,
+
 	// more
 	binary;	// set
 }

@@ -15,7 +15,13 @@
  */
 package edu.emory.mathcs.nlp.component.dep;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.emory.mathcs.nlp.component.util.feature.Direction;
 import edu.emory.mathcs.nlp.component.util.feature.FeatureItem;
@@ -28,9 +34,9 @@ import edu.emory.mathcs.nlp.component.util.feature.Field;
 public abstract class DEPFeatureTemplate extends FeatureTemplate<DEPNode,DEPState<DEPNode>>
 {
 	private static final long serialVersionUID = -2218894375050796569L;
+	protected Map<String, String> map;
 
-	public DEPFeatureTemplate()	
-	{
+	public DEPFeatureTemplate() {
 		init();
 	}
 	
@@ -43,7 +49,7 @@ public abstract class DEPFeatureTemplate extends FeatureTemplate<DEPNode,DEPStat
 	{
 		DEPNode node = getNode(item);
 		if (node == null) return null;
-		
+
 		switch (item.field)
 		{
 		case word_form: return node.getWordForm();
@@ -52,9 +58,33 @@ public abstract class DEPFeatureTemplate extends FeatureTemplate<DEPNode,DEPStat
 		case pos_tag: return node.getPOSTag();
 		case feats: return node.getFeat((String)item.value);
 		case dependency_label: return node.getLabel();
-		case valency: return node.getValency((Direction)item.value);
-		default: throw new IllegalArgumentException("Unsupported feature: "+item.field);
+		case valency: return node.getValency((Direction) item.value);
+			case subcategory_label: return node.getSubcategorization((Direction) item.value, Field.dependency_label);
+			case subcategory_lemma: return node.getSubcategorization((Direction) item.value, Field.lemma);
+			case subcategory_pos:	return node.getSubcategorization((Direction) item.value, Field.pos_tag);
+			case path: return node.getPath(state.getInput(0), Field.dependency_label);	//LOOK AT
+			case brown:
+				try {
+					return getBrownCluster(node);
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
+			default: throw new IllegalArgumentException("Unsupported feature: "+item.field);
 		}
+	}
+
+	private Map<String, String> initMap() throws IOException, ClassNotFoundException {
+		ObjectInputStream in = new ObjectInputStream(new FileInputStream("/home/azureuser/map.ser"));
+		Map<String, String> map = (HashMap<String, String>) in.readObject();
+		in.close();
+		return map;
+	}
+
+	private String getBrownCluster(DEPNode node) throws IOException, ClassNotFoundException {
+		map = initMap();
+		return map.get(node.getSimplifiedWordForm());
 	}
 	
 	@Override

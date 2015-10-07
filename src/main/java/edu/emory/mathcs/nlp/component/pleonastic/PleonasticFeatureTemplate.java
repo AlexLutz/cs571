@@ -28,6 +28,34 @@ public class PleonasticFeatureTemplate<N extends DEPNode> extends FeatureTemplat
 		add(new FeatureItem<>(3, Field.lemma));
 		add(new FeatureItem<>(4, Field.lemma));
 		
+		
+//		word form
+		add(new FeatureItem<>(0, Field.word_form));
+		add(new FeatureItem<>(1, Field.word_form));
+		add(new FeatureItem<>(3, Field.word_form));
+		add(new FeatureItem<>(4, Field.word_form));
+		
+//		dependecy labels
+		add(new FeatureItem<>(4, Field.dependency_label));
+		add(new FeatureItem<>(3, Field.dependency_label));
+		add(new FeatureItem<>(2, Field.dependency_label));
+		add(new FeatureItem<>(0, Field.dependency_label));
+		
+		add(new FeatureItem<>(0, Field.prefix, 3));
+		add(new FeatureItem<>(-1, Field.prefix, 2));
+		add(new FeatureItem<>(1, Field.prefix, 3));
+		add(new FeatureItem<>(2, Field.prefix, 3));
+		add(new FeatureItem<>(3, Field.prefix, 4));
+		add(new FeatureItem<>(-1, Field.prefix, 4));
+		add(new FeatureItem<>(-2, Field.prefix, 2));
+		add(new FeatureItem<>(0, Field.suffix, 2));
+		add(new FeatureItem<>(0, Field.suffix, 3));
+		
+//		bigram
+		add(new FeatureItem<>(0, Field.uncapitalized_simplified_word_form), new FeatureItem<>(1, Field.uncapitalized_simplified_word_form));
+		add(new FeatureItem<>(2, Field.uncapitalized_simplified_word_form), new FeatureItem<>(3, Field.uncapitalized_simplified_word_form));
+		add(new FeatureItem<>(3, Field.uncapitalized_simplified_word_form), new FeatureItem<>(4, Field.uncapitalized_simplified_word_form));
+		
 //		POS tags
 		add(new FeatureItem<>(-4, Field.pos_tag));
 		add(new FeatureItem<>(-3, Field.pos_tag));
@@ -58,6 +86,7 @@ public class PleonasticFeatureTemplate<N extends DEPNode> extends FeatureTemplat
 		case pos_tag: return node.getPOSTag();
 		case prefix: return getPrefix(node, (Integer)item.value);
 		case suffix: return getSuffix(node, (Integer)item.value);
+		case dependency_label: return node.getLabel();
 		default: throw new IllegalArgumentException("Unsupported feature: "+item.field);
 		}
 	}
