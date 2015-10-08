@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.emory.mathcs.nlp.common.util.StringUtils;
 import edu.emory.mathcs.nlp.component.util.feature.Direction;
 import edu.emory.mathcs.nlp.component.util.feature.FeatureItem;
 import edu.emory.mathcs.nlp.component.util.feature.FeatureTemplate;
@@ -62,7 +63,7 @@ public abstract class DEPFeatureTemplate extends FeatureTemplate<DEPNode,DEPStat
 			case subcategory_label: return node.getSubcategorization((Direction) item.value, Field.dependency_label);
 			case subcategory_lemma: return node.getSubcategorization((Direction) item.value, Field.lemma);
 			case subcategory_pos:	return node.getSubcategorization((Direction) item.value, Field.pos_tag);
-			case path: return node.getPath(state.getInput(0), Field.dependency_label);	//LOOK AT
+			case path: return node.getPath(state.getInput(0), Field.dependency_label);
 			case brown:
 				try {
 					return getBrownCluster(node);
@@ -71,8 +72,21 @@ public abstract class DEPFeatureTemplate extends FeatureTemplate<DEPNode,DEPStat
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}
+			case suffix: return getSuffix(node);
+			case prefix: return getPrefix(node);
 			default: throw new IllegalArgumentException("Unsupported feature: "+item.field);
 		}
+	}
+
+	private String getSuffix(DEPNode node)
+	{
+		String s = node.getSimplifiedWordForm();
+		return (3 < s.length()) ? StringUtils.toLowerCase(s.substring(s.length() - 3)) : null;
+	}
+
+	private String getPrefix(DEPNode node) {
+		String s = node.getSimplifiedWordForm();
+		return (3 < s.length()) ? StringUtils.toLowerCase(s.substring(0, 3)) : null;
 	}
 
 	private Map<String, String> initMap() throws IOException, ClassNotFoundException {

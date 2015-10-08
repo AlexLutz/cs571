@@ -3,12 +3,6 @@ package edu.emory.mathcs.nlp.component.dep.feature;
 import edu.emory.mathcs.nlp.component.dep.DEPFeatureTemplate;
 import edu.emory.mathcs.nlp.component.util.feature.*;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created by alexlutz on 10/5/15.
  */
@@ -152,33 +146,84 @@ public class DEPFeatureTemplate3 extends DEPFeatureTemplate {
         addSet(new FeatureItem<>(Source.i, 0, Field.binary));   //86.60
         addSet(new FeatureItem<>(Source.j, 0, Field.binary));
 
-        add(new FeatureItem<>(Source.i, 0, Field.lemma), new FeatureItem<>(Source.i, 0, Field.pos_tag), //86.45
-                new FeatureItem<>(Source.k, 1, Field.lemma), new FeatureItem<>(Source.k, 1, Field.pos_tag));
+        add(new FeatureItem<>(Source.i, 0, Field.lemma), new FeatureItem<>(Source.i, 0, Field.pos_tag),   //87.45    //86.45total
+                new FeatureItem<>(Source.k, 1, Field.lemma), new FeatureItem<>(Source.k, 1, Field.pos_tag));  //87.40 take this out
         add(new FeatureItem<>(Source.i, 0, Field.lemma), new FeatureItem<>(Source.i, 0, Field.pos_tag),
-                new FeatureItem<>(Source.k, 1, Field.lemma));
-        add(new FeatureItem<>(Source.i, 0, Field.lemma), new FeatureItem<>(Source.i, 0, Field.pos_tag),
-                new FeatureItem<>(Source.k, 1, Field.pos_tag));
-        add(new FeatureItem<>(Source.i, 0, Field.lemma),
-                new FeatureItem<>(Source.k, 1, Field.lemma), new FeatureItem<>(Source.k, 1, Field.pos_tag));
-        add(new FeatureItem<>(Source.i, 0, Field.pos_tag),
-                new FeatureItem<>(Source.k, 1, Field.lemma), new FeatureItem<>(Source.k, 1, Field.pos_tag));
-        add(new FeatureItem<>(Source.i, 0, Field.lemma), new FeatureItem<>(Source.k, 1, Field.lemma));
-        add(new FeatureItem<>(Source.i, 0, Field.pos_tag), new FeatureItem<>(Source.k, 1, Field.pos_tag));
-        add(new FeatureItem<>(Source.k, 1, Field.pos_tag), new FeatureItem<>(Source.j,  0, Field.lemma));
+                new FeatureItem<>(Source.k, 1, Field.lemma));                                                   //87.53!
+//        add(new FeatureItem<>(Source.i, 0, Field.lemma), new FeatureItem<>(Source.i, 0, Field.pos_tag),
+//                new FeatureItem<>(Source.k, 1, Field.pos_tag));                                                 //87.37
+//        add(new FeatureItem<>(Source.i, 0, Field.lemma),
+//                new FeatureItem<>(Source.k, 1, Field.lemma), new FeatureItem<>(Source.k, 1, Field.pos_tag));  //87.31
+//        add(new FeatureItem<>(Source.i, 0, Field.pos_tag),
+//                new FeatureItem<>(Source.k, 1, Field.lemma), new FeatureItem<>(Source.k, 1, Field.pos_tag));    //87.26 slow
+//        add(new FeatureItem<>(Source.i, 0, Field.lemma), new FeatureItem<>(Source.k, 1, Field.lemma));          //87.27
+//        add(new FeatureItem<>(Source.i, 0, Field.pos_tag), new FeatureItem<>(Source.k, 1, Field.pos_tag));      //87.41
+//        add(new FeatureItem<>(Source.k, 1, Field.pos_tag), new FeatureItem<>(Source.j,  0, Field.lemma));       //87.31
 
-//        add(new FeatureItem<>(Source.i, 0, Field.lemma), new FeatureItem<>(Source.i, 0, Field.valency, Direction.right));   //86.14
-//        add(new FeatureItem<>(Source.i,  0, Field.pos_tag), new FeatureItem<>(Source.i, 0, Field.valency, Direction.right));
-//        add(new FeatureItem<>(Source.i,  0, Field.lemma), new FeatureItem<>(Source.i, 0, Field.valency, Direction.left));
-//        add(new FeatureItem<>(Source.i,  0, Field.pos_tag), new FeatureItem<>(Source.i, 0, Field.valency, Direction.left));
-//        add(new FeatureItem<>(Source.j,  0, Field.lemma), new FeatureItem<>(Source.j, 0, Field.valency, Direction.left));
-//        add(new FeatureItem<>(Source.j,  0, Field.pos_tag), new FeatureItem<>(Source.j, 0, Field.valency, Direction.left));
+//        add(new FeatureItem<>(Source.i, 0, Field.lemma), new FeatureItem<>(Source.i, 0, Field.valency, Direction.right));   //87.28   //86.14
+//        add(new FeatureItem<>(Source.i,  0, Field.pos_tag), new FeatureItem<>(Source.i, 0, Field.valency, Direction.right));    //87.25
+//        add(new FeatureItem<>(Source.i,  0, Field.lemma), new FeatureItem<>(Source.i, 0, Field.valency, Direction.left));       //87.24
+        add(new FeatureItem<>(Source.i,  0, Field.pos_tag), new FeatureItem<>(Source.i, 0, Field.valency, Direction.left)); //87.40
+//        add(new FeatureItem<>(Source.j,  0, Field.lemma), new FeatureItem<>(Source.j, 0, Field.valency, Direction.left));   //lower
+        add(new FeatureItem<>(Source.j,  0, Field.pos_tag), new FeatureItem<>(Source.j, 0, Field.valency, Direction.left)); // up
 
-        add(new FeatureItem<>(Source.i, null, 0, Field.subcategory_label, Direction.all));  //86.36
-        add(new FeatureItem<>(Source.j, null, 0, Field.subcategory_label, Direction.all));
-        add(new FeatureItem<>(Source.i, null, 0, Field.subcategory_lemma, Direction.all));
-        add(new FeatureItem<>(Source.j, null, 0, Field.subcategory_lemma, Direction.all));
-        add(new FeatureItem<>(Source.i, null, 0, Field.subcategory_pos, Direction.all));
-        add(new FeatureItem<>(Source.j, null, 0, Field.subcategory_pos, Direction.all));
+        //assume optimal above for scores below - 87.55
+        add(new FeatureItem<>(Source.i, null, 0, Field.subcategory_label, Direction.all));  //87.70            //86.36
+        add(new FeatureItem<>(Source.j, null, 0, Field.subcategory_label, Direction.all));  //87.72     //87.42 no valency direction left
+//        add(new FeatureItem<>(Source.i, null, 0, Field.subcategory_lemma, Direction.all));  //87.50
+//        add(new FeatureItem<>(Source.i, null, 0, Field.subcategory_pos, Direction.all));       //87.39
+//        add(new FeatureItem<>(Source.j, null, 0, Field.subcategory_pos, Direction.all));     //87.48
+//        add(new FeatureItem<>(Source.j, null, 0, Field.subcategory_lemma, Direction.all));      //87.63
+//
+//        add(new FeatureItem<>(Source.k, 0, Field.lemma), new FeatureItem<>(Source.k, 1, Field.lemma), new FeatureItem<>(Source.k, 2, Field.lemma)); //87.55  //87.21
+//        add(new FeatureItem<>(Source.k, 0, Field.simplified_word_form), new FeatureItem<>(Source.k, 1, Field.pos_tag), new FeatureItem<>(Source.k, 2, Field.pos_tag));  //87.41
+        //suffix and prefix
+//        add(new FeatureItem<>(Source.i,  0, Field.suffix)); //87.48
+//        add(new FeatureItem<>(Source.j,  0, Field.suffix));     //87.51 -Base AdaGrad
+//        add(new FeatureItem<>(Source.k,  0, Field.suffix));     //87.48
+//
+//        add(new FeatureItem<>(Source.j, 0, Field.prefix));  //87.46
+//        add(new FeatureItem<>(Source.i, 0, Field.prefix));      //87.62
+//        add(new FeatureItem<>(Source.k, 0, Field.prefix));      //87.62
+
+//        add(new FeatureItem<>(Source.k, 0, Field.simplified_word_form), new FeatureItem<>(Source.k, 1, Field.pos_tag)); //87.44
+//        add(new FeatureItem<>(Source.k, 0, Field.prefix), new FeatureItem<>(Source.k, 1, Field.prefix));  //87.52  //87.26 take this out(works ADD?)
+//        add(new FeatureItem<>(Source.k, 0, Field.suffix), new FeatureItem<>(Source.k, 1, Field.suffix));    //87.52
+//        add(new FeatureItem<>(Source.k, 0, Field.lemma), new FeatureItem<>(Source.k, 1, Field.lemma));          //87.41
+//        add(new FeatureItem<>(Source.k, 0, Field.lemma), new FeatureItem<>(Source.k, 1, Field.lemma));      //87.41
+//        add(new FeatureItem<>(Source.i, 0, Field.lemma), new FeatureItem<>(Source.i, 1, Field.lemma));      //87.57
+//        add(new FeatureItem<>(Source.j, 0, Field.lemma), new FeatureItem<>(Source.j, 1, Field.lemma));          //87.53
+//        add(new FeatureItem<>(Source.i, 0, Field.lemma), new FeatureItem<>(Source.i, 1, Field.pos_tag));        //87.49
+//        add(new FeatureItem<>(Source.j, 0, Field.lemma), new FeatureItem<>(Source.j, 1, Field.pos_tag));        //87.49
+//        add(new FeatureItem<>(Source.k, 0, Field.lemma), new FeatureItem<>(Source.k, 1, Field.pos_tag));            //87.59
+//        add(new FeatureItem<>(Source.j,  0, Field.lemma), new FeatureItem<>(Source.i,  0, Field.path));         //87.72
+//        add(new FeatureItem<>(Source.j,  0, Field.pos_tag), new FeatureItem<>(Source.i, 0,  Field.path));       //87.72
+//
+//          add(new FeatureItem<>(Source.i,  0, Field.lemma), new FeatureItem<>(Source.i, 0, Field.path));           //87.72
+//        add(new FeatureItem<>(Source.i,  0, Field.pos_tag), new FeatureItem<>(Source.i, 0,Field.path));         //87.72
+
+//        add(    new FeatureItem<>(Source.i,  0, Field.lemma),
+//                new FeatureItem<>(Source.j,  0, Field.lemma),
+//                new FeatureItem<>(Source.j,  0, Field.pos_tag));        //87.45
+
+//        add(    new FeatureItem<>(Source.i,  0, Field.lemma),
+//                new FeatureItem<>(Source.i,  0, Field.pos_tag),
+//                new FeatureItem<>(Source.j,  0, Field.pos_tag));    //87.60
+
+//        add(    new FeatureItem<>(Source.i,  0, Field.pos_tag),
+//                new FeatureItem<>(Source.j,  0, Field.lemma),
+//                new FeatureItem<>(Source.j,  0, Field.pos_tag));    //87.45
+
+//        add(    new FeatureItem<>(Source.i,  0, Field.pos_tag),
+//                new FeatureItem<>(Source.i,  Relation.lmd, 0, Field.pos_tag),
+//                new FeatureItem<>(Source.i,  Relation.lmd2, 0, Field.pos_tag)); //87.57
+
+//        add(    new FeatureItem<>(Source.i,  0, Field.pos_tag),
+//                new FeatureItem<>(Source.i,  Relation.h, 0, Field.pos_tag),
+//                new FeatureItem<>(Source.i,  Relation.h2, 0, Field.pos_tag));   //87.49
+
+
+
     }
 
 }
