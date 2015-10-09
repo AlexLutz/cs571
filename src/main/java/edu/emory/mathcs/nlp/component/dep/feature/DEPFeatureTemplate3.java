@@ -1,12 +1,22 @@
 package edu.emory.mathcs.nlp.component.dep.feature;
 
+import edu.emory.mathcs.nlp.common.util.IOUtils;
 import edu.emory.mathcs.nlp.component.dep.DEPFeatureTemplate;
 import edu.emory.mathcs.nlp.component.util.feature.*;
+import sun.nio.ch.IOUtil;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by alexlutz on 10/5/15.
  */
 public class DEPFeatureTemplate3 extends DEPFeatureTemplate {
+
+    private final String clusterPath = "./embedding/brown.xz";
+
     @Override
     protected void init() {
         //basic
@@ -202,28 +212,25 @@ public class DEPFeatureTemplate3 extends DEPFeatureTemplate {
 //          add(new FeatureItem<>(Source.i,  0, Field.lemma), new FeatureItem<>(Source.i, 0, Field.path));           //87.72
 //        add(new FeatureItem<>(Source.i,  0, Field.pos_tag), new FeatureItem<>(Source.i, 0,Field.path));         //87.72
 
-//        add(    new FeatureItem<>(Source.i,  0, Field.lemma),
-//                new FeatureItem<>(Source.j,  0, Field.lemma),
-//                new FeatureItem<>(Source.j,  0, Field.pos_tag));        //87.45
+//        add(new FeatureItem<>(Source.i,  0, Field.lemma), new FeatureItem<>(Source.j,  0, Field.pos_tag));        //87.45
 
-//        add(    new FeatureItem<>(Source.i,  0, Field.lemma),
-//                new FeatureItem<>(Source.i,  0, Field.pos_tag),
-//                new FeatureItem<>(Source.j,  0, Field.pos_tag));    //87.60
+//        add(new FeatureItem<>(Source.i,  0, Field.lemma), new FeatureItem<>(Source.i,  0, Field.pos_tag),
 
-//        add(    new FeatureItem<>(Source.i,  0, Field.pos_tag),
-//                new FeatureItem<>(Source.j,  0, Field.lemma),
-//                new FeatureItem<>(Source.j,  0, Field.pos_tag));    //87.45
+//        add(new FeatureItem<>(Source.i,  0, Field.pos_tag), new FeatureItem<>(Source.j,  0, Field.lemma),         new FeatureItem<>(Source.j,  0, Field.pos_tag));    //87.45
 
-//        add(    new FeatureItem<>(Source.i,  0, Field.pos_tag),
-//                new FeatureItem<>(Source.i,  Relation.lmd, 0, Field.pos_tag),
-//                new FeatureItem<>(Source.i,  Relation.lmd2, 0, Field.pos_tag)); //87.57
+//        add(new FeatureItem<>(Source.i,  0, Field.pos_tag),new FeatureItem<>(Source.i,  Relation.lmd, 0, Field.pos_tag),
 
-//        add(    new FeatureItem<>(Source.i,  0, Field.pos_tag),
-//                new FeatureItem<>(Source.i,  Relation.h, 0, Field.pos_tag),
-//                new FeatureItem<>(Source.i,  Relation.h2, 0, Field.pos_tag));   //87.49
+//        add(new FeatureItem<>(Source.i,  0, Field.pos_tag),new FeatureItem<>(Source.i,  Relation.h, 0, Field.pos_tag), new FeatureItem<>(Source.i,  Relation.h2, 0, Field.pos_tag));   //87.49
 
+//        add(new FeatureItem<>(Source.i, 0, Field.lemma), new FeatureItem<>(Source.i, 0, Field.distance));   //they only add if Right or Left Arc
+//        add(new FeatureItem<>(Sq  qource.i, 0, Field.pos_tag), new FeatureItem<>(Source.i, 0, Field.distance));
+//        add(new FeatureItem<>(Source.j, 0, Field.lemma), new FeatureItem<>(Source.j, 0, Field.distance));
+//        add(new FeatureItem<>(Source.j, 0, Field.pos_tag), new FeatureItem<>(Source.j, 0, Field.distance));
 
+    }
 
+    protected void initMap() throws IOException {
+//        map = (Map<String, Set<String>>) new ObjectInputStream(IOUtils.createObjectXZBufferedInputStream(clusterPath));
     }
 
 }

@@ -154,7 +154,9 @@ public abstract class NLPTrain<N,S extends NLPState<N>>
 		for (int epoch=1; ;epoch++)
 		{
 			eval.clear();
+			long start = System.currentTimeMillis();
 			optimizer.train(model.getInstanceList());
+			long end = System.currentTimeMillis();
 			iterate(reader, developFiles, nodes -> component.process(nodes));
 			currScore = eval.score();
 			
@@ -168,8 +170,15 @@ public abstract class NLPTrain<N,S extends NLPState<N>>
 				model.getWeightVector().fromArray(prevWeight);
 				break;
 			}
+			int nonEmpty = 0;
+			for (float f :component.getModels()[0].getWeightVector().toArray())
+				if (f>.00001)
+					nonEmpty++;
+
 			
-			BinUtils.LOG.info(String.format("%3d: %5.2f\n", epoch, currScore));
+			BinUtils.LOG.info(String.format("%3d: %5.2f Empty: %d\n", epoch, currScore, nonEmpty));
+			BinUtils.LOG.info(String.format("%s\n", eval.toString()));
+			BinUtils.LOG.info(String.format("Time training: %d\n", end-start));
 		}
 		
 		return prevScore; 

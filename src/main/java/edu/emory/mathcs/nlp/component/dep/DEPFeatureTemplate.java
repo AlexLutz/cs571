@@ -22,6 +22,7 @@ import java.io.ObjectInputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import edu.emory.mathcs.nlp.common.util.StringUtils;
 import edu.emory.mathcs.nlp.component.util.feature.Direction;
@@ -35,7 +36,7 @@ import edu.emory.mathcs.nlp.component.util.feature.Field;
 public abstract class DEPFeatureTemplate extends FeatureTemplate<DEPNode,DEPState<DEPNode>>
 {
 	private static final long serialVersionUID = -2218894375050796569L;
-	protected Map<String, String> map;
+	protected Map<String, Set<String>> map;
 
 	public DEPFeatureTemplate() {
 		init();
@@ -64,18 +65,48 @@ public abstract class DEPFeatureTemplate extends FeatureTemplate<DEPNode,DEPStat
 			case subcategory_lemma: return node.getSubcategorization((Direction) item.value, Field.lemma);
 			case subcategory_pos:	return node.getSubcategorization((Direction) item.value, Field.pos_tag);
 			case path: return node.getPath(state.getInput(0), Field.dependency_label);
-			case brown:
-				try {
-					return getBrownCluster(node);
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				}
+			case brown: return getBrownCluster(node);
 			case suffix: return getSuffix(node);
 			case prefix: return getPrefix(node);
+			case distance: return getDistance(node);	//not sure about this
 			default: throw new IllegalArgumentException("Unsupported feature: "+item.field);
 		}
+	}
+
+	private String getDistance(DEPNode node) {
+		return String.valueOf(node.getID() - state.getInput().getID());
+	}
+
+
+	private String getBrownCluster(DEPNode node) {
+		String cluster = "";
+		Set<String> distribution;
+
+		if(map != null){
+			distribution = map.get(StringUtils.toLowerCase(node.getSimplifiedWordForm()));
+			if(distribution != null){
+				for(String c : distribution)
+					if(c.length() > cluster.length())
+						cluster = c;
+			}
+		}
+
+		return cluster;
+	}
+
+	private String[] getBrownClusters(DEPNode node) {
+		String[] values = null;
+		Set<String> distribution;
+
+		if(map != null){
+			distribution = map.get(StringUtils.toLowerCase(node.getSimplifiedWordForm()));
+			if(distribution != null){
+				values = new String[distribution.size()];
+				distribution.toArray(values);
+			}
+		}
+
+		return values;
 	}
 
 	private String getSuffix(DEPNode node)
@@ -87,18 +118,6 @@ public abstract class DEPFeatureTemplate extends FeatureTemplate<DEPNode,DEPStat
 	private String getPrefix(DEPNode node) {
 		String s = node.getSimplifiedWordForm();
 		return (3 < s.length()) ? StringUtils.toLowerCase(s.substring(0, 3)) : null;
-	}
-
-	private Map<String, String> initMap() throws IOException, ClassNotFoundException {
-		ObjectInputStream in = new ObjectInputStream(new FileInputStream("/home/azureuser/map.ser"));
-		Map<String, String> map = (HashMap<String, String>) in.readObject();
-		in.close();
-		return map;
-	}
-
-	private String getBrownCluster(DEPNode node) throws IOException, ClassNotFoundException {
-		map = initMap();
-		return map.get(node.getSimplifiedWordForm());
 	}
 	
 	@Override
